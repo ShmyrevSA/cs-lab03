@@ -1,4 +1,5 @@
 #include "histogram.h"
+#include "SVG.h"
 
 #include <cassert>
 
@@ -47,6 +48,16 @@ test_empty() {
     assert(max == 0);
 }
 
+void
+test_low() {
+    svg_text(20, 20, to_string(10), 5);
+}
+
+void
+test_high() {
+    svg_text(20, 20, to_string(10), 35);
+}
+
 int
 main() {
     test_positive();
@@ -54,4 +65,6 @@ main() {
     test_equal();
     test_one();
     test_empty();
+    test_high();
+    test_low();
 }

@@ -17,8 +17,23 @@ void svg_rect(double x, double y, double width, double height, string stroke, st
     cout << "<rect x='" << x <<"' y='" << y << "' width='" << width <<"' height='" << height <<"' stroke='"<< stroke <<"' fill='#"<< fill <<"' />";
 }
 
-void svg_text(double left, double baseline, string text) {
-    cout << "<text x='" << left << "' y='" << baseline << "'>" << text <<"</text>";
+void svg_text(double left, double baseline, string text, size_t size) {
+    while (size < 8 || size > 32){
+        char YN;
+        cout << "Text size is out of bounds, choose a new value? [y/n]  ";
+        cin >> YN;
+        switch(YN){
+        case('y'):
+            cout << "Enter new text size [8-32] : ";
+            cin >> size;
+            break;
+        default:
+            return;
+            break;
+        }
+
+    }
+    cout << "<text x='" << left << "' y='" << baseline << "' font-size='" << size << "'>" << text <<"</text>";
 }
 
 void show_histogram_svg(const vector<size_t>& bins) {
@@ -30,6 +45,10 @@ void show_histogram_svg(const vector<size_t>& bins) {
     const auto BIN_HEIGHT = 30;
     const auto BLOCK_WIDTH = 10;
     const auto MAX_ASTERISK = IMAGE_WIDTH - TEXT_WIDTH;
+
+    size_t size;
+    cerr << "Enter text size [8-32] : ";
+    cin >> size;
 
     size_t max_count = 0;
     for (size_t bin : bins) {
@@ -48,7 +67,7 @@ void show_histogram_svg(const vector<size_t>& bins) {
             bin_scale = (size_t)(bin * scaling_factor);
         }
         const double bin_width = BLOCK_WIDTH * bin_scale;
-        svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
+        svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin), size);
         svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);
         top += BIN_HEIGHT;
     }
