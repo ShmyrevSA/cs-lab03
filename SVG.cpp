@@ -18,21 +18,6 @@ void svg_rect(double x, double y, double width, double height, string stroke, st
 }
 
 void svg_text(double left, double baseline, string text, size_t size) {
-    while (size < 8 || size > 32){
-        char YN;
-        cout << "Text size is out of bounds, choose a new value? [y/n]  ";
-        cin >> YN;
-        switch(YN){
-        case('y'):
-            cout << "Enter new text size [8-32] : ";
-            cin >> size;
-            break;
-        default:
-            return;
-            break;
-        }
-
-    }
     cout << "<text x='" << left << "' y='" << baseline << "' font-size='" << size << "'>" << text <<"</text>";
 }
 
@@ -49,6 +34,22 @@ void show_histogram_svg(const vector<size_t>& bins) {
     size_t size;
     cerr << "Enter text size [8-32] : ";
     cin >> size;
+
+    while (size < 8 || size > 32){
+        char YN;
+        cout << "Text size is out of bounds, choose a new value? [y/n]  ";
+        cin >> YN;
+        switch(YN){
+        case('y'):
+            cout << "Enter new text size [8-32] : ";
+            cin >> size;
+            break;
+        default:
+            return;
+            break;
+        }
+
+    }
 
     size_t max_count = 0;
     for (size_t bin : bins) {

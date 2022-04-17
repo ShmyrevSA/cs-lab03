@@ -49,12 +49,12 @@ test_empty() {
 }
 
 void
-test_low() {
+test_low_text() {
     svg_text(20, 20, to_string(10), 5);
 }
 
 void
-test_high() {
+test_high_text() {
     svg_text(20, 20, to_string(10), 35);
 }
 
@@ -65,6 +65,6 @@ main() {
     test_equal();
     test_one();
     test_empty();
-    test_high();
-    test_low();
+    test_high_text();
+    test_low_text();
 }
