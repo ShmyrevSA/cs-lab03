@@ -21,6 +21,15 @@ void svg_text(double left, double baseline, string text, size_t size) {
     cout << "<text x='" << left << "' y='" << baseline << "' font-size='" << size << "'>" << text <<"</text>";
 }
 
+size_t check_size(size_t text_size){
+    if (text_size < 8 || text_size > 32){
+        return(0);
+    }
+    else{
+        return(text_size);
+    }
+}
+
 void show_histogram_svg(const vector<size_t>& bins) {
     const auto IMAGE_WIDTH = 400;
     const auto IMAGE_HEIGHT = 300;
@@ -30,27 +39,20 @@ void show_histogram_svg(const vector<size_t>& bins) {
     const auto BIN_HEIGHT = 30;
     const auto BLOCK_WIDTH = 10;
     const auto MAX_ASTERISK = IMAGE_WIDTH - TEXT_WIDTH;
-
-    size_t size;
-    cerr << "Enter text size [8-32] : ";
-    cin >> size;
-
-    while (size < 8 || size > 32){
-        char YN;
-        cout << "Text size is out of bounds, choose a new value? [y/n]  ";
-        cin >> YN;
-        switch(YN){
-        case('y'):
-            cout << "Enter new text size [8-32] : ";
-            cin >> size;
-            break;
-        default:
-            return;
-            break;
+    size_t text_size = 0;
+    while(text_size == 0){
+        cerr << "Enter text size [8-32] : ";
+        cin >> text_size;
+        text_size = check_size(text_size);
+        if (text_size == 0){
+            char s;
+            cerr << "Text size out of bounds, do you whant to enter new text size? [y/n]";
+            cin >> s;
+            if (s == 'n'){
+                text_size = 12;
+            }
         }
-
     }
-
     size_t max_count = 0;
     for (size_t bin : bins) {
         if (bin * BLOCK_WIDTH > max_count) {
@@ -68,7 +70,7 @@ void show_histogram_svg(const vector<size_t>& bins) {
             bin_scale = (size_t)(bin * scaling_factor);
         }
         const double bin_width = BLOCK_WIDTH * bin_scale;
-        svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin), size);
+        svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin), text_size);
         svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);
         top += BIN_HEIGHT;
     }
