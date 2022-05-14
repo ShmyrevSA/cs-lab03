@@ -4,11 +4,6 @@
 #include "SVG.h"
 using namespace std;
 
-struct Input {
-    vector<double> numbers;
-    size_t bin_count;
-};
-
 vector<double>
 input_numbers(istream& in, size_t count) {
     vector<double> result(count);
@@ -36,14 +31,14 @@ read_input(istream& in) {
 }
 
 vector<size_t>
-make_histogram(const vector<double> &numbers, const size_t &bin_count){
+make_histogram(Input data){
 
     double min, max;
-    find_minmax(numbers, min, max);
-    vector<size_t> bins(bin_count, 0);
-    for (double number : numbers) {
-        size_t bin = (size_t)(((number - min) / (max - min)) * bin_count);
-        if (bin == bin_count) {
+    find_minmax(data.numbers, min, max);
+    vector<size_t> bins(data.bin_count, 0);
+    for (double number : data.numbers) {
+        size_t bin = (size_t)(((number - min) / (max - min)) * data.bin_count);
+        if (bin == data.bin_count) {
             bin--;
         }
         bins[bin]++;
@@ -90,7 +85,7 @@ main() {
     Input data;
     data = read_input(cin);
     // Обработка данных
-    const auto bins = make_histogram(data.numbers, data.bin_count);
+    const auto bins = make_histogram(data);
 
     // Вывод данных
     show_histogram_svg(bins);
