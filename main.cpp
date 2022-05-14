@@ -2,6 +2,7 @@
 #include <vector>
 #include "histogram.h"
 #include "SVG.h"
+#include <curl/curl.h>
 using namespace std;
 
 vector<double>
@@ -82,6 +83,7 @@ show_histogram_text(const vector <size_t> &bins){
 
 int
 main() {
+    curl_global_init(CURL_GLOBAL_ALL);
     // ¬вод данных
     const auto input = read_input(cin, true);
     // ќбработка данных
