@@ -82,7 +82,14 @@ show_histogram_text(const vector <size_t> &bins){
 }
 
 int
-main() {
+main(int argc, char* argv[]) {
+    if (argc > 1){
+        cout << "argc = " << argc <<'\n';
+        for(size_t i = 0; i<argc; i ++ ){
+            cout << "argv[" << i << "] = " << argv[i] << '\n';
+        }
+        return 0;
+    }
     curl_global_init(CURL_GLOBAL_ALL);
     // ¬вод данных
     const auto input = read_input(cin, true);
