@@ -3,6 +3,8 @@
 #include "histogram.h"
 #include "SVG.h"
 #include <curl/curl.h>
+#include <sstream>
+#include <string>
 using namespace std;
 
 vector<double>
@@ -32,9 +34,39 @@ read_input(istream& in, bool prompt) {
     return data;
 }
 
+size_t
+write_data(void* items, size_t item_size, size_t item_count, void* ctx) {
+    size_t data_size = item_size * item_count;
+    stringstream* buffer = reinterpret_cast<stringstream*>(ctx);
+    buffer->write(reinterpret_cast<const char*>(items), data_size);
+    return data_size;
+}
+
+Input
+download(const string& address) {
+    char *ip;
+    curl_global_init(CURL_GLOBAL_ALL);
+    stringstream buffer;
+    CURL* curl = curl_easy_init();
+    if(curl){
+        CURLcode res;
+        curl_easy_setopt(curl, CURLOPT_URL, address.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+        res = curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+        if(res != CURLE_OK){
+            cerr<<" Error text  = "<<curl_easy_strerror(res);
+            exit(1);
+        }
+        curl_easy_getinfo(curl, CURLINFO_PRIMARY_IP, &ip); // IP
+        cerr << "ip: " << ip << '\n';
+    }
+    return read_input(buffer, false);
+}
+
 vector<size_t>
 make_histogram(Input data){
-
     double min, max;
     find_minmax(data.numbers, min, max);
     vector<size_t> bins(data.bin_count, 0);
@@ -83,23 +115,14 @@ show_histogram_text(const vector <size_t> &bins){
 
 int
 main(int argc, char* argv[]) {
-    if (argc > 1){
-        CURL* curl = curl_easy_init();
-        if(curl){
-            CURLcode res;
-            curl_easy_setopt(curl, CURLOPT_URL, argv[1]);
-            res = curl_easy_perform(curl);
-            if(res){
-                cerr<<" Error text  = "<<curl_easy_strerror(res);
-                exit(1);
-            }
-            curl_easy_cleanup(curl);
-        }
-        return 0;
+    Input input;
+    if (argc > 1) {
+        input = download(argv[1]);
     }
-    curl_global_init(CURL_GLOBAL_ALL);
-    // ¬вод данных
-    const auto input = read_input(cin, true);
+    else {
+        input = read_input(cin, true);
+    }
+
     // ќбработка данных
     const auto bins = make_histogram(input);
 
