@@ -1,10 +1,10 @@
-#include <iostream>
 #include <vector>
 #include "histogram.h"
 #include "SVG.h"
 #include <curl/curl.h>
 #include <sstream>
 #include <string>
+#include <windows.h>
 using namespace std;
 
 vector<double>
