@@ -2,6 +2,7 @@
 #include <vector>
 #include "histogram.h"
 #include "SVG.h"
+#include <windows.h>
 using namespace std;
 
 vector<double>
@@ -64,6 +65,20 @@ show_histogram_text(const vector <size_t> &bins){
 
 int
 main() {
+    DWORD info = GetVersion();
+    DWORD mask = 0x0000ffff;
+    DWORD version = info & mask;
+    DWORD platform = info >> 16;
+    DWORD version_minor = version >> 8;
+    DWORD version_major = version & 0x0000ff;
+    printf("Windows v%u.%u", version_major, version_minor);
+
+    if ((info & 0x40000000) == 0) {
+        DWORD build = platform;
+        printf(" (build %u)", build);
+    }
+    return 0;
+
     // ¬вод данных
     size_t number_count;
     cerr << "Enter number count: ";
